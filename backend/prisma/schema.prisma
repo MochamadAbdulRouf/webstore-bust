@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  avatar    String?
+  balance   Float    @default(0)
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders   Order[]
+  library  Library[]
+  reviews  Review[]
+  cartItems CartItem[]
+  wishlist Wishlist[]
+
+  @@map("users")
+}
+
+model Game {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String
+  longDesc    String?
+  price       Float
+  imageUrl    String?
+  bannerUrl   String?
+  fileUrl     String?
+  fileSize    String?
+  category    String
+  tags        String[]
+  publisher   String
+  developer   String
+  releaseDate DateTime?
+  featured    Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  rating      Float    @default(0)
+  reviewCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems OrderItem[]
+  library    Library[]
+  reviews    Review[]
+  cartItems  CartItem[]
+  wishlist   Wishlist[]
+
+  @@map("games")
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  total     Float
+  status    OrderStatus @default(COMPLETED)
+  createdAt DateTime    @default(now())
+
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id      String @id @default(uuid())
+  orderId String
+  gameId  String
+  price   Float
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  game  Game  @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}
+
+model Library {
+  userId  String
+  gameId  String
+  addedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@id([userId, gameId])
+  @@map("library")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  gameId    String
+  rating    Int
+  comment   String
+  helpful   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId])
+  @@map("reviews")
+}
+
+model CartItem {
+  userId  String
+  gameId  String
+  addedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@id([userId, gameId])
+  @@map("cart_items")
+}
+
+model Wishlist {
+  userId  String
+  gameId  String
+  addedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@id([userId, gameId])
+  @@map("wishlists")
+}
