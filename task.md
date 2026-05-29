@@ -10,7 +10,7 @@
 - [x] Middleware (auth, admin, error)
 - [x] Utils (response formatter, helpers)
 - [x] Run npm install (backend)
-- [ ] Run prisma migrate + generate + seed (needs PostgreSQL running)
+- [x] Run prisma migrate + generate + seed (needs PostgreSQL running)
 
 ## Phase 2: Backend API Modules
 - [x] Auth module (register, login, me, refresh)
@@ -57,7 +57,7 @@
 - [x] Fix Suspense boundaries for useSearchParams (home, profile, checkout)
 - [x] Fix tailwind.config removal (not using tailwind)
 - [x] Verify frontend build passes cleanly
-- [ ] Start both dev servers and smoke-test
-- [ ] Run DB migration + seed
-- [ ] End-to-end integration check
-- [ ] Responsive design final review
+- [x] Start both dev servers and smoke-test (Running under PM2 on VM)
+- [x] Run DB migration + seed (Done on VM)
+- [x] End-to-end integration check (Verified via API curls)
+- [x] Responsive design final review
