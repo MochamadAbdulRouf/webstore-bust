@@ -1,4 +1,4 @@
-# Dokumentasi Aliran Aplikasi & Fitur Utama - Bust Webstore
+# Dokumentasi workflow Aplikasi & Fitur Utama - Bust Webstore
 
 Dokumen ini berisi penjelasan terperinci mengenai arsitektur sistem, fitur-fitur utama, alur kerja (app flow) pengguna, serta cetak biru antarmuka (*ASCII Wireframe*) untuk aplikasi **Bust**.
 
