@@ -82,7 +82,7 @@ JWT_SECRET="bust_super_secret_jwt_key_2024_change_in_production"
 JWT_EXPIRES_IN="7d"
 JWT_REFRESH_SECRET="bust_refresh_secret_key_2024_change_in_production"
 JWT_REFRESH_EXPIRES_IN="30d"
-FRONTEND_URL="http://54.145.160.91:3000"
+FRONTEND_URL="http://13.218.142.186:3000"
 UPLOAD_DIR="uploads"
 MAX_FILE_SIZE=10737418240
 EOF
@@ -92,9 +92,9 @@ EOF
 Buat file `~/webstore-bust/frontend/.env.local`:
 ```bash
 cat << 'EOF' > ~/webstore-bust/frontend/.env.local
-NEXT_PUBLIC_API_URL="http://54.145.160.91:5000/api"
+NEXT_PUBLIC_API_URL="http://13.218.142.186:5000/api"
 NEXT_PUBLIC_APP_NAME="Bust"
-NEXT_PUBLIC_APP_URL="http://54.145.160.91:3000"
+NEXT_PUBLIC_APP_URL="http://13.218.142.186:3000"
 EOF
 ```
 

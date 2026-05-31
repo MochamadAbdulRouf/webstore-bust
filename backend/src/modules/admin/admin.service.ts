@@ -23,15 +23,33 @@ export const createGame = async (data: CreateGameData, imageFile?: Express.Multe
 
   const imageUrl = imageFile ? `/uploads/images/${imageFile.filename}` : null;
 
+  let parsedTags: string[] = [];
+  if (data.tags) {
+    if (Array.isArray(data.tags)) {
+      parsedTags = data.tags;
+    } else if (typeof data.tags === 'string') {
+      parsedTags = (data.tags as string)
+        .split(',')
+        .map((t: string) => t.trim())
+        .filter(Boolean);
+    }
+  }
+
+  const isFeatured = data.featured === true || String(data.featured) === 'true';
+
   return prisma.game.create({
     data: {
-      ...data,
+      title: data.title,
+      description: data.description,
+      longDesc: data.longDesc || null,
+      category: data.category,
+      publisher: data.publisher,
+      developer: data.developer || data.publisher,
       slug,
       price: parseFloat(String(data.price)),
       imageUrl,
-      tags: data.tags || [],
-      developer: data.developer || data.publisher,
-      featured: data.featured || false,
+      tags: parsedTags,
+      featured: isFeatured,
       releaseDate: data.releaseDate ? new Date(data.releaseDate) : null,
     },
   });
@@ -45,11 +63,45 @@ export const updateGame = async (
   const game = await prisma.game.findUnique({ where: { id: gameId } });
   if (!game) throw new Error('Game not found');
 
-  const updateData: Record<string, unknown> = { ...data };
-  if (data.price) updateData.price = parseFloat(String(data.price));
-  if (imageFile) updateData.imageUrl = `/uploads/images/${imageFile.filename}`;
-  if (data.tags) updateData.tags = data.tags;
-  if (data.featured !== undefined) updateData.featured = data.featured === true || String(data.featured) === 'true';
+  const updateData: Record<string, any> = {};
+
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.description !== undefined) updateData.description = data.description;
+  if (data.longDesc !== undefined) updateData.longDesc = data.longDesc;
+  if (data.category !== undefined) updateData.category = data.category;
+  if (data.publisher !== undefined) updateData.publisher = data.publisher;
+  if (data.developer !== undefined) {
+    updateData.developer = data.developer;
+  } else if (data.publisher !== undefined) {
+    updateData.developer = data.publisher;
+  }
+
+  if (data.price !== undefined) {
+    updateData.price = parseFloat(String(data.price));
+  }
+
+  if (imageFile) {
+    updateData.imageUrl = `/uploads/images/${imageFile.filename}`;
+  }
+
+  if (data.tags !== undefined) {
+    if (Array.isArray(data.tags)) {
+      updateData.tags = data.tags;
+    } else if (typeof data.tags === 'string') {
+      updateData.tags = (data.tags as string)
+        .split(',')
+        .map((t: string) => t.trim())
+        .filter(Boolean);
+    }
+  }
+
+  if (data.featured !== undefined) {
+    updateData.featured = data.featured === true || String(data.featured) === 'true';
+  }
+
+  if (data.releaseDate !== undefined) {
+    updateData.releaseDate = data.releaseDate ? new Date(data.releaseDate) : null;
+  }
 
   return prisma.game.update({ where: { id: gameId }, data: updateData });
 };
